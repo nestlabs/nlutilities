@@ -31,6 +31,7 @@ SUBDIRS                                   = \
     $(NULL)
 
 EXTRA_DIST                                = \
+    Makefile-bootstrap                      \
     .default-version                        \
     bootstrap                               \
     bootstrap-configure                     \
