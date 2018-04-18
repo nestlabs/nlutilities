@@ -231,6 +231,7 @@ am__define_uniq_tagged_files = \
 ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
+DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -333,9 +334,11 @@ MKDIR_P = @MKDIR_P@
 NLASSERT_CPPFLAGS = @NLASSERT_CPPFLAGS@
 NLASSERT_LDFLAGS = @NLASSERT_LDFLAGS@
 NLASSERT_LIBS = @NLASSERT_LIBS@
+NLASSERT_SUBDIRS = @NLASSERT_SUBDIRS@
 NLUNIT_TEST_CPPFLAGS = @NLUNIT_TEST_CPPFLAGS@
 NLUNIT_TEST_LDFLAGS = @NLUNIT_TEST_LDFLAGS@
 NLUNIT_TEST_LIBS = @NLUNIT_TEST_LIBS@
+NLUNIT_TEST_SUBDIRS = @NLUNIT_TEST_SUBDIRS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJCOPY = @OBJCOPY@
@@ -409,6 +412,7 @@ psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
+subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target = @target@
 target_alias = @target_alias@
@@ -419,19 +423,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_MAKEFLAGS = --no-print-directory
-
-# Always package (e.g. for 'make dist') these subdirectories.
-DIST_SUBDIRS = \
-    third_party                             \
-    include                                 \
-    src                                     \
-    tests                                   \
-    doc                                     \
-    $(NULL)
-
-
-# Unconditionally build these subdirectories.
 SUBDIRS = \
+    third_party                             \
     include                                 \
     src                                     \
     tests                                   \
@@ -442,12 +435,14 @@ EXTRA_DIST = \
     CHANGES                                 \
     CONTRIBUTING.md                         \
     LICENSE                                 \
+    Makefile-bootstrap                      \
     README.md                               \
     .default-version                        \
     .travis.yml                             \
     bootstrap                               \
     bootstrap-configure                     \
     $(srcdir)/third_party/nlbuild-autotools \
+    repos.conf                              \
     $(NULL)
 
 BUILT_SOURCES = \
@@ -482,6 +477,14 @@ DISTCLEANFILES = \
 # .dist-version second, and the .default-version last.
 #
 VERSION_FILE := $(if $(wildcard $(builddir)/.local-version),$(builddir)/.local-version,$(if $(wildcard $(srcdir)/.dist-version),$(srcdir)/.dist-version,$(srcdir)/.default-version))
+
+#
+# When we run 'distcheck' and --with-nlassert or --with-nlunit_test
+# default to 'internal', the nlbuild-autotools infrastructure will
+# attempt to create git paths to manage the nlunit-test repo. Two
+# directories need to be writable to facilitate this.
+#
+DISTCHECK_CONFIGURE_FLAGS = `chmod u+w .. ../third_party`
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -898,7 +901,7 @@ distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -f Makefile
 distclean-am: clean-am distclean-generic distclean-libtool \
-	distclean-tags
+	distclean-local distclean-tags
 
 dvi: dvi-recursive
 
@@ -968,10 +971,10 @@ uninstall-am: uninstall-dist_docDATA
 	clean-libtool cscope cscopelist-am ctags ctags-am dist \
 	dist-all dist-bzip2 dist-gzip dist-hook dist-lzip dist-shar \
 	dist-tarZ dist-xz dist-zip distcheck distclean \
-	distclean-generic distclean-libtool distclean-tags \
-	distcleancheck distdir distuninstallcheck dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dist_docDATA install-dvi \
+	distclean-generic distclean-libtool distclean-local \
+	distclean-tags distcleancheck distdir distuninstallcheck dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dist_docDATA install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am install-man \
 	install-pdf install-pdf-am install-ps install-ps-am \
@@ -1050,6 +1053,13 @@ $(distdir)/.dist-version $(builddir)/.local-version:
 dist distcheck: $(BUILT_SOURCES)
 
 dist-hook: $(distdir)/.dist-version
+
+#
+# Ensure any locally synchronized repositories defined by 'repos.conf'
+# are cleaned up.
+#
+distclean-local:
+	$(MAKE) -C $(srcdir) -f Makefile-bootstrap clean-repos
 
 #
 # Top-level convenience target for making a documentation-only
