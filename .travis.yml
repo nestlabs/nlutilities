@@ -29,7 +29,7 @@ compiler:
   - gcc
 
 script:
-  - ./configure --enable-coverage && make
+  - ./configure --enable-coverage && make && make distcheck
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
