@@ -23,21 +23,8 @@ include $(abs_top_nlbuild_autotools_dir)/automake/pre.am
 
 AM_MAKEFLAGS                              = --no-print-directory
 
-# Always package (e.g. for 'make dist') these subdirectories.
-
-DIST_SUBDIRS                              = \
-    third_party                             \
-    include                                 \
-    src                                     \
-    tests                                   \
-    doc                                     \
-    $(NULL)
-
-
-
-# Unconditionally build these subdirectories.
-
 SUBDIRS                                   = \
+    third_party                             \
     include                                 \
     src                                     \
     tests                                   \
@@ -48,12 +35,14 @@ EXTRA_DIST                                = \
     CHANGES                                 \
     CONTRIBUTING.md                         \
     LICENSE                                 \
+    Makefile-bootstrap                      \
     README.md                               \
     .default-version                        \
     .travis.yml                             \
     bootstrap                               \
     bootstrap-configure                     \
     $(srcdir)/third_party/nlbuild-autotools \
+    repos.conf                              \
     $(NULL)
 
 BUILT_SOURCES                             = \
@@ -155,9 +144,24 @@ $(distdir)/.dist-version: $(builddir)/.local-version force
 $(distdir)/.dist-version $(builddir)/.local-version:
 	$(call check-file,$(@F))
 
+#
+# When we run 'distcheck' and --with-nlassert or --with-nlunit_test
+# default to 'internal', the nlbuild-autotools infrastructure will
+# attempt to create git paths to manage the nlunit-test repo. Two
+# directories need to be writable to facilitate this.
+#
+DISTCHECK_CONFIGURE_FLAGS=`chmod u+w .. ../third_party`
+
 dist distcheck: $(BUILT_SOURCES)
 
 dist-hook: $(distdir)/.dist-version
+
+#
+# Ensure any locally synchronized repositories defined by 'repos.conf'
+# are cleaned up.
+#
+distclean-local:
+	$(MAKE) -C $(srcdir) -f Makefile-bootstrap clean-repos
 
 #
 # Top-level convenience target for making a documentation-only
