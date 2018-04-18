@@ -458,7 +458,6 @@ if test "${nl_with_nlassert}" = "internal"; then
     AC_CONFIG_SUBDIRS([third_party/nlassert/repo])
 fi
 
-
 if test "${nl_with_nlunit_test}" = "internal"; then
     AC_CONFIG_SUBDIRS([third_party/nlunit-test/repo])
 fi
