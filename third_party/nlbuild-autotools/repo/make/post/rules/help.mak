@@ -1,5 +1,5 @@
 #
-#    Copyright 2017-2018 Nest Labs Inc. All Rights Reserved.
+#    Copyright 2018 Nest Labs Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -16,20 +16,24 @@
 
 #
 #    Description:
-#      This file is the Travis CI hosted, distributed continuous 
-#      integration configuration file for the Nest Labs Utilities
-#      library.
+#      This file is the make "footer" or post make header for help-related
+#      targets.
 #
 
-language: generic
+define PrintHelp
+$(NL_V_AT)echo "This makefile supports the following build targets:"
+$(NL_V_AT)echo
+$(NL_V_AT)echo "  help"
+$(NL_V_AT)echo "    Display this content."
+$(NL_V_AT)echo
+endef # PrintHelp
 
-sudo: false
-compiler:
-  - clang
-  - gcc
+.PHONY: help-local
+help-local:
+	$(call PrintHelp)
 
-script:
-  - ./configure --enable-coverage && make && make distcheck
+.PHONY: help-hook
+help-hook: help-local
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+.PHONY: help
+help: help-local help-hook

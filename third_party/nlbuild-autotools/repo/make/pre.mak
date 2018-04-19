@@ -1,5 +1,5 @@
 #
-#    Copyright 2017-2018 Nest Labs Inc. All Rights Reserved.
+#    Copyright 2018 Nest Labs Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -16,20 +16,9 @@
 
 #
 #    Description:
-#      This file is the Travis CI hosted, distributed continuous 
-#      integration configuration file for the Nest Labs Utilities
-#      library.
+#      This file is the generic "header" or pre make header included in
+#      any makefile used in the build tree.
 #
 
-language: generic
-
-sudo: false
-compiler:
-  - clang
-  - gcc
-
-script:
-  - ./configure --enable-coverage && make && make distcheck
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+include $(abs_top_nlbuild_autotools_dir)/make/pre/tools.mak
+include $(abs_top_nlbuild_autotools_dir)/make/pre/macros.mak

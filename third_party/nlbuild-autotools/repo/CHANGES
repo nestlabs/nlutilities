@@ -1,3 +1,17 @@
+1.5.0 (2018-04-19)
+
+        * Added support for pulling down remote package dependencies
+          using git submodule.
+
+        * Addressed an issue in which nl_enable_coverage.m4 did not work
+          correctly on some Linux distributions by specifying coverage
+          libraries under LIBS rather than LDFLAGS.
+
+1.4.4 (2018-02-06)
+
+        * Addressed an issue where 'mkskeleton' failed while trying to
+          generate "third_party/Makefile.am".
+
 1.4.3 (2018-02-01)
 
         * Addressed an issue with NL_{SAVE,RESTORE}_WERROR in which
