@@ -320,7 +320,7 @@ NL_WITH_PACKAGE(
 )
 
 # Depending on whether nlassert has been configured for an internal
-# location, it's directory stem within this package needs to be set
+# location, its directory stem within this package needs to be set
 # accordingly. In addition, if the location is internal, then we need
 # to attempt to pull it down using the bootstrap makefile.
 
@@ -374,7 +374,7 @@ if test "${nl_cv_build_tests}" = "yes"; then
 fi
 
 # Depending on whether nlunit-test has been configured for an internal
-# location, it's directory stem within this package needs to be set
+# location, its directory stem within this package needs to be set
 # accordingly. In addition, if the location is internal, then we need
 # to attempt to pull it down using the bootstrap makefile.
 
