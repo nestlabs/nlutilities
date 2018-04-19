@@ -1,4 +1,4 @@
-1.1 (2018-04-18)
+1.1 (2018-04-19)
 
         * Updated to utilize nlbuild-autotools 1.5.0, removing inlined
           copy of nlunit-test in the process.
