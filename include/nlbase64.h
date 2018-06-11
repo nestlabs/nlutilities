@@ -30,8 +30,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include <nlmacros.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
