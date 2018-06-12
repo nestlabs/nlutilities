@@ -98,7 +98,7 @@ static void list_available_cmd(const char *curstr)
     curlen = strlen(curstr);
 
     for (i = 0; i < UIF_NUM_CMD; i++) {
-        if (strncasecmp(UIF_CMDTAB[i].cmd, curstr, curlen) == 0) {
+        if (strncmp(UIF_CMDTAB[i].cmd, curstr, curlen) == 0) {
             j++;
             printf("%-24s ", UIF_CMDTAB[i].cmd);
             if (j % 3 == 0) {
@@ -136,7 +136,7 @@ static int get_cmd_nxt_ch(const char *curstr, char *ch)
     }
 
     for (i = 0; i < UIF_NUM_CMD; i++) {
-        if (strncasecmp(UIF_CMDTAB[i].cmd, curstr, curlen) == 0) {
+        if (strncmp(UIF_CMDTAB[i].cmd, curstr, curlen) == 0) {
             if (found) {
                 if (UIF_CMDTAB[i].cmd[curlen] != *ch) {
                     /* no matched unique next char */
@@ -263,6 +263,8 @@ uif_handle_input_char(int ch)
             res = 1;
             break;
 
+/* No tab completion in minishell config. */
+#if !NLUIF_USE_MINISHELL
         case '\t':      /* Tab */
             if (inputPos == 0)
                 break;
@@ -289,6 +291,8 @@ uif_handle_input_char(int ch)
                 }
             }
             break;
+#endif /* !NLUIF_USE_MINISHELL */
+
 #ifdef SUPPORT_CMD_HISTORY
         case 0x1b:
             esc = 1;
@@ -419,8 +423,12 @@ uif_run_cmd (void)
         int i;
         for (i = 0; i < UIF_NUM_CMD; i++)
         {
-            if (strcasecmp(UIF_CMDTAB[i].cmd, argv[0]) == 0)
+            if (strcmp(UIF_CMDTAB[i].cmd, argv[0]) == 0)
             {
+#if NLUIF_USE_MINISHELL
+                UIF_CMDTAB[i].func(argc, argv);
+                goto done;
+#else
                 if (((argc-1) >= UIF_CMDTAB[i].min_args) &&
                     ((argc-1) <= UIF_CMDTAB[i].max_args))
                 {
@@ -442,10 +450,13 @@ uif_run_cmd (void)
                     printf(SYNTAX, argv[0]);
                     goto done;
                 }
+#endif /* NLUIF_USE_MINISHELL */
             }
         }
+#if !NLUIF_USE_MINISHELL
         printf(INVCMD, argv[0]);
         printf("%s", HELPMSG);
+#endif /* NLUIF_USE_MINISHELL */
     }
 
 done:
@@ -470,6 +481,9 @@ uif_get_value (const char *s, bool *success, int base)
         return value;
     }
 }
+
+#if !NLUIF_USE_MINISHELL
+
 /********************************************************************/
 static void print_help(const UIF_CMD *entry)
 {
@@ -477,11 +491,11 @@ static void print_help(const UIF_CMD *entry)
 
     printf(UIF_CMD_STR, entry->cmd);
 
-#if UIF_USE_DESCRIPTION
+#if NLUIF_USE_DESCRIPTION
     printf(" %-25s", entry->description);
 #endif
 
-#if UIF_USE_SYNTAX
+#if NLUIF_USE_SYNTAX
     if (!syntaxFunc)
     {
         printf(" %s %s", entry->cmd, (char*) entry->syntax);
@@ -490,7 +504,7 @@ static void print_help(const UIF_CMD *entry)
 
     printf("\n");
 
-#if UIF_USE_SYNTAX
+#if NLUIF_USE_SYNTAX
     if (syntaxFunc)
     {
         UIF_SYNTAX_FUNC func = entry->syntax;
@@ -540,7 +554,7 @@ uif_cmd_set (int argc, char **argv)
         for (index = 0; index < UIF_NUM_SETCMD; ++index)
         {
             printf(OPTFMT, UIF_SETCMDTAB[index].option);
-#if UIF_USE_SYNTAX
+#if NLUIF_USE_SYNTAX
             printf("%s\n", UIF_SETCMDTAB[index].syntax);
 #endif
         }
@@ -556,7 +570,7 @@ uif_cmd_set (int argc, char **argv)
 
     for (index = 0; index < UIF_NUM_SETCMD; index++)
     {
-        if (strcasecmp(UIF_SETCMDTAB[index].option, argv[1]) == 0)
+        if (strcmp(UIF_SETCMDTAB[index].option, argv[1]) == 0)
         {
             if (((argc-1-1) >= UIF_SETCMDTAB[index].min_args) &&
                 ((argc-1-1) <= UIF_SETCMDTAB[index].max_args))
@@ -600,7 +614,7 @@ uif_cmd_show (int argc, char **argv)
 
     for (index = 0; index < UIF_NUM_SETCMD; index++)
     {
-        if (strcasecmp(UIF_SETCMDTAB[index].option, argv[1]) == 0)
+        if (strcmp(UIF_SETCMDTAB[index].option, argv[1]) == 0)
         {
             if (((argc-1-1) >= UIF_SETCMDTAB[index].min_args) &&
                 ((argc-1-1) <= UIF_SETCMDTAB[index].max_args))
@@ -621,3 +635,4 @@ uif_cmd_show (int argc, char **argv)
 }
 
 /********************************************************************/
+#endif /* !NLUIF_USE_MINISHELL */
