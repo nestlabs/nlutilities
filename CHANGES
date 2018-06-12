@@ -1,4 +1,9 @@
-1.1.2 (2018-05-11)
+1.2 (2018-06-12)
+
+        * Added configuration options for nlUIF to support a feature-
+          reduced "mini-shell".
+
+1.1.2 (2018-06-11)
 
         * Fixed regressions in the implementation of Qdown and CONTAINEROF.
 
