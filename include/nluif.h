@@ -38,6 +38,108 @@
 extern "C" {
 #endif
 
+/**
+ *  @def NLUIF_USE_MINISHELL
+ *
+ *  @brief
+ *    The minishell build feature uses smaller default values for max-args,
+ *    max-line and max-prompt, and uses a pared down UIF command
+ *    structure, eliding both syntax and descripton.
+ */
+#ifndef NLUIF_USE_MINISHELL
+#define NLUIF_USE_MINISHELL   0
+#endif /* NLUIF_USE_MINISHELL */
+
+/**
+ *  @def NLUIF_USE_VERBOSE
+ *
+ *  @brief
+ *    The verbose build feature enables both usage syntax and command
+ *    description UIF fields.
+ */
+#ifndef NLUIF_USE_VERBOSE
+#define NLUIF_USE_VERBOSE     !NLUIF_USE_MINISHELL
+#endif /* NLUIF_USE_VERBOSE */
+
+/**
+ *  @def NLUIF_USE_DESCRIPTION
+ *
+ *  @brief
+ *    The description build feature enables the UIF description field.
+ */
+#ifndef NLUIF_USE_DESCRIPTION
+#define NLUIF_USE_DESCRIPTION (NLUIF_USE_VERBOSE && !NLUIF_USE_MINISHELL)
+#endif /* NLUIF_USE_DESCRIPTION */
+
+/**
+ *  @def NLUIF_USE_SYNTAX
+ *
+ *  @brief
+ *    The syntax build feature enables the UIF command syntax UIF field.
+ */
+#ifndef NLUIF_USE_SYNTAX
+#define NLUIF_USE_SYNTAX      (NLUIF_USE_VERBOSE && !NLUIF_USE_MINISHELL)
+#endif /* NLUIF_USE_SYNTAX */
+
+/**
+ *  @def NLUIF_USE_VOID_FUNCS
+ *
+ *  @brief
+ *    The void functions build feature enables shell function entry
+ *    points that have a void return value; otherwise, shell function
+ *    entry points return a signed integer.
+ */
+#ifndef NLUIF_USE_VOID_FUNCS
+#define NLUIF_USE_VOID_FUNCS 1
+#endif /* NLUIF_USE_VOID_FUNCS */
+
+#if !NLUIF_USE_MINISHELL
+/*
+ * Maximum command line arguments
+ */
+#ifndef UIF_MAX_ARGS
+#define UIF_MAX_ARGS     29
+#endif
+
+/*
+ * Maximum length of the command line
+ */
+#ifndef UIF_MAX_LINE
+#define UIF_MAX_LINE    768
+#endif
+
+/*
+ * Maximum length of the prompt string
+ */
+#ifndef UIF_MAX_PRMPT
+#define UIF_MAX_PROMPT    8
+#endif
+
+#else /* !NLUIF_USE_MINISHELL */
+
+/*
+ * Maximum command line arguments
+ */
+#ifndef UIF_MAX_ARGS
+#define UIF_MAX_ARGS      3
+#endif
+
+/*
+ * Maximum length of the command line
+ */
+#ifndef UIF_MAX_LINE
+#define UIF_MAX_LINE    100
+#endif
+
+/*
+ * Maximum length of the prompt string
+ */
+#ifndef UIF_MAX_PROMPT
+#define UIF_MAX_PROMPT    1
+#endif
+
+#endif /* !NLUIF_USE_MINISHELL */
+
 /*
  * Function prototypes
  */
@@ -65,67 +167,60 @@ uif_cmd_set (int, char **);
 void
 uif_cmd_show (int, char **);
 
-/*
- * Maximum command line arguments
- */
-#define UIF_MAX_ARGS    29
-
-/*
- * Maximum length of the command line
- */
-#define UIF_MAX_LINE    768
-
 #define UIF_HISTORY_CNT 5
-
-/*
- * Maximum length of the prompt string
- */
-#define UIF_MAX_PROMPT    8
-
-#ifndef UIF_USE_VERBOSE
-#define UIF_USE_VERBOSE 1
-#endif
-
-#if UIF_USE_VERBOSE
-#define UIF_USE_DESCRIPTION 1
-#define UIF_USE_SYNTAX      1
-#else
-#define UIF_USE_DESCRIPTION 0
-#define UIF_USE_SYNTAX      0
-#endif /* UIF_USE_VERBOSE */
 
 /*
  * The command table entry data structure
  */
+
+#if NLUIF_USE_VOID_FUNCS
+typedef void nl_uif_shell_func_return_t;
+#else
+typedef int  nl_uif_shell_func_return_t;
+#endif /* NLUIF_USE_VOID_FUNCS */
+
+typedef nl_uif_shell_func_return_t (* nl_uif_shell_func_t)(int argc, char **argv);
+
 typedef struct
 {
     const char *  cmd;              /* command name user types, ie. GO  */
+    nl_uif_shell_func_t func;       /* actual function to call          */
+#if !NLUIF_USE_MINISHELL
     int     min_args;               /* min num of args command accepts  */
     int     max_args;               /* max num of args command accepts  */
     int     flags;                  /* command flags (e.g. repeat)      */
-    void    (*func)(int, char **);  /* actual function to call          */
-#if UIF_USE_DESCRIPTION
+#endif /* !NLUIF_USE_MINISHELL */
+#if !NLUIF_USE_MINISHELL
+#if NLUIF_USE_DESCRIPTION
     const char *  description;      /* brief description of command     */
-#endif
-#if UIF_USE_SYNTAX
+#endif /* NLUIF_USE_DESCRIPTION */
+#if NLUIF_USE_SYNTAX
     const void *  syntax;           /* syntax of command                */
-#endif
+#endif /* NLUIF_USE_SYNTAX*/
+#endif /* !NLUIF_USE_MINISHELL */
 } UIF_CMD;
+
+typedef UIF_CMD nl_uif_cmd_t;
 
 typedef void (*UIF_SYNTAX_FUNC)(const char *name);
 
-#if UIF_USE_DESCRIPTION && UIF_USE_SYNTAX
+#if NLUIF_USE_DESCRIPTION && NLUIF_USE_SYNTAX
 #define DECLARE_UIF_CMD(name, min, max, flags, func, desc, syntax) \
-	{ name, min, max, flags, func, desc, syntax }
-#elif UIF_USE_DESCRIPTION && !UIF_USE_SYNTAX
+        { name, func, min, max, flags, desc, syntax }
+#elif NLUIF_USE_DESCRIPTION && !NLUIF_USE_SYNTAX
 #define DECLARE_UIF_CMD(name, min, max, flags, func, desc, syntax) \
-	{ name, min, max, flags, func, desc }
-#elif !UIF_USE_DESCRIPTION && UIF_USE_SYNTAX
+        { name, func, min, max, flags, desc }
+#elif !NLUIF_USE_DESCRIPTION && NLUIF_USE_SYNTAX
 #define DECLARE_UIF_CMD(name, min, max, flags, func, desc, syntax) \
-	{ name, min, max, flags, func, syntax }
+        { name, func, min, max, flags, syntax }
+#elif NLUIF_USE_MINISHELL
+#define DECLARE_UIF_CMD(name, min, max, flags, func, desc, syntax) \
+        { name, func }
+#define DECLARE_UIF_MINISHELL_CMD(name, func) \
+        DECLARE_UIF_CMD(name, 0, 0, 0, func, NULL, NULL)
 #else
 #define DECLARE_UIF_CMD(name, min, max, flags, func, desc, syntax) \
-	{ name, min, max, flags, func }
+        { name, func, min, max, flags }
 #endif /* UIF_USE_DESCRIPTION && UIF_USE_SYNTAX */
 
 /*
