@@ -109,7 +109,7 @@ typedef uint32_t quint_t;
 #define Qu31(x) Q(quint_t, 31, (x))
 
 // Convert down
-#define Qdown(from, to, x) (((x) + (nlMask((from) - (to)))) >> ((from) - (to)))
+#define Qdown(from, to, x) (((x) + (1 << (((from) - (to)) - 1))) >> ((from) - (to)))
 #define Qint(from, x)      Qdown((from), 0, (x))
 
 // Convert up

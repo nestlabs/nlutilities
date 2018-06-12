@@ -207,7 +207,9 @@
 // to a type compatible with "member" (because the conditional operator requires
 // pointer operands to be of compatible type).
 #ifndef CONTAINEROF
-#define CONTAINEROF(pointer, type, member)      (nlStaticCast(type *, (nlStaticCast(char *, (1 ? (pointer) : &(nlStaticCast(type *, 0)->member) - OFFSETOF(type, member))))))
+#define CONTAINEROF(pointer, type, member)      (nlStaticCast(type *,             \
+    (nlStaticCast(char *, (1 ? (pointer) : &(nlStaticCast(type *, 0)->member))) - \
+     OFFSETOF(type, member))))
 #endif
 
 #ifndef ALIGN_POINTER
