@@ -40,7 +40,7 @@ void nl_dump_bytes(uintptr_t offs, const uint8_t *bytes, size_t num)
     {
         const size_t thisGo = (num >= 16 ? 16 : num);
 
-        printf("%08lX  ", (unsigned long int)offs);
+        printf("%08"PRIXPTR  ", offs);
 
         for (i = 0; i < thisGo; i++)
         {
