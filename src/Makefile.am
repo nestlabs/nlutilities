@@ -1,5 +1,6 @@
 #
-#    Copyright 2018 Nest Labs Inc. All Rights Reserved.
+#    Copyright 2018 Google LLC
+#    All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -28,6 +29,7 @@ libnlutilities_a_CPPFLAGS           = \
     $(NULL)
 
 libnlutilities_a_SOURCES            = \
+    nlabs-variants.c                  \
     nlbase64.c                        \
     nlbintohex.c                      \
     nldumpbytes.c                     \
