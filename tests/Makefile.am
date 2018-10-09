@@ -1,5 +1,6 @@
 #
-#    Copyright 2018 Nest Labs Inc. All Rights Reserved.
+#    Copyright 2018 Google LLC
+#    All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -50,6 +51,7 @@ COMMON_LDADD                                   = \
 # Test applications that should be run when the 'check' target is run.
 
 check_PROGRAMS                                 = \
+    nlutilities-test-abs                         \
     nlutilities-test-algorithm-cxx               \
     nlutilities-test-alignment                   \
     nlutilities-test-base64                      \
@@ -77,6 +79,9 @@ TESTS_ENVIRONMENT                              = \
     $(NULL)
 
 # Source, compiler, and linker options for test programs.
+
+nlutilities_test_abs_SOURCES                   = nlutilities-test-algorithm-cxx.cpp
+nlutilities_test_abs_LDADD                     = $(COMMON_LDADD)
 
 nlutilities_test_algorithm_cxx_SOURCES         = nlutilities-test-algorithm-cxx.cpp
 nlutilities_test_algorithm_cxx_LDADD           = $(COMMON_LDADD)

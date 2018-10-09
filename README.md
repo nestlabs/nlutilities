@@ -11,6 +11,7 @@ Standard Library-style utility algorithms, functions, and macros.
 
 Included are interfaces for:
 
+* abs() variants that do not exhibit the unexpected abs(INT_MIN) = INT_MIN behavior
 * managing aligned memory
 * managing return status codes and errors
 * managing and allocating memory

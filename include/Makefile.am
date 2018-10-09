@@ -1,5 +1,6 @@
 #
-#    Copyright 2018 Nest Labs Inc. All Rights Reserved.
+#    Copyright 2018 Google LLC
+#    All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -23,6 +24,7 @@
 include $(abs_top_nlbuild_autotools_dir)/automake/pre.am
 
 include_HEADERS             = \
+    nlabs-variants.h          \
     nlalgorithm.hpp           \
     nlalignedvarpool.hpp      \
     nlalignment.h             \
