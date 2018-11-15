@@ -130,10 +130,10 @@ NLUTILITIES_COVERAGE_INFO                             = ${NLUTILITIES_COVERAGE_B
 $(NLUTILITIES_COVERAGE_BUNDLE):
 	$(call create-directory)
 
-$(NLUTILITIES_COVERAGE_INFO): check | $(NLUTILITIES_COVERAGE_BUNDLE)
+$(NLUTILITIES_COVERAGE_INFO): check-local | $(NLUTILITIES_COVERAGE_BUNDLE)
 	$(call generate-coverage-report,${top_builddir})
 
-coverage: $(NLUTILITIES_COVERAGE_INFO)
+coverage-local: $(NLUTILITIES_COVERAGE_INFO)
 
 clean-local: clean-local-coverage
 
