@@ -21,12 +21,15 @@
 #      library.
 #
 
-language: generic
+language: cpp
 
 sudo: false
 compiler:
   - clang
   - gcc
+os:
+  - linux
+  - osx
 
 script:
   - ./configure --enable-coverage && make && make distcheck
