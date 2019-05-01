@@ -15,7 +15,8 @@
 @SET_MAKE@
 
 #
-#    Copyright 2018 Nest Labs Inc. All Rights Reserved.
+#    Copyright 2018 Google LLC
+#    All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -101,7 +102,9 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@NLUTILITIES_BUILD_TESTS_TRUE@check_PROGRAMS = nlutilities-test-algorithm-cxx$(EXEEXT) \
+@NLUTILITIES_BUILD_TESTS_TRUE@check_PROGRAMS =  \
+@NLUTILITIES_BUILD_TESTS_TRUE@	nlutilities-test-abs$(EXEEXT) \
+@NLUTILITIES_BUILD_TESTS_TRUE@	nlutilities-test-algorithm-cxx$(EXEEXT) \
 @NLUTILITIES_BUILD_TESTS_TRUE@	nlutilities-test-alignment$(EXEEXT) \
 @NLUTILITIES_BUILD_TESTS_TRUE@	nlutilities-test-base64$(EXEEXT) \
 @NLUTILITIES_BUILD_TESTS_TRUE@	nlutilities-test-binhex$(EXEEXT) \
@@ -143,18 +146,24 @@ mkinstalldirs = $(SHELL) \
 CONFIG_HEADER = $(top_builddir)/include/nlutilities-config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__nlutilities_test_algorithm_cxx_SOURCES_DIST =  \
+am__nlutilities_test_abs_SOURCES_DIST =  \
 	nlutilities-test-algorithm-cxx.cpp
-@NLUTILITIES_BUILD_TESTS_TRUE@am_nlutilities_test_algorithm_cxx_OBJECTS = nlutilities-test-algorithm-cxx.$(OBJEXT)
-nlutilities_test_algorithm_cxx_OBJECTS =  \
-	$(am_nlutilities_test_algorithm_cxx_OBJECTS)
+@NLUTILITIES_BUILD_TESTS_TRUE@am_nlutilities_test_abs_OBJECTS = nlutilities-test-algorithm-cxx.$(OBJEXT)
+nlutilities_test_abs_OBJECTS = $(am_nlutilities_test_abs_OBJECTS)
 am__DEPENDENCIES_1 =
-@NLUTILITIES_BUILD_TESTS_TRUE@nlutilities_test_algorithm_cxx_DEPENDENCIES =  \
+@NLUTILITIES_BUILD_TESTS_TRUE@nlutilities_test_abs_DEPENDENCIES =  \
 @NLUTILITIES_BUILD_TESTS_TRUE@	$(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+am__nlutilities_test_algorithm_cxx_SOURCES_DIST =  \
+	nlutilities-test-algorithm-cxx.cpp
+@NLUTILITIES_BUILD_TESTS_TRUE@am_nlutilities_test_algorithm_cxx_OBJECTS = nlutilities-test-algorithm-cxx.$(OBJEXT)
+nlutilities_test_algorithm_cxx_OBJECTS =  \
+	$(am_nlutilities_test_algorithm_cxx_OBJECTS)
+@NLUTILITIES_BUILD_TESTS_TRUE@nlutilities_test_algorithm_cxx_DEPENDENCIES =  \
+@NLUTILITIES_BUILD_TESTS_TRUE@	$(am__DEPENDENCIES_1)
 am__nlutilities_test_alignment_SOURCES_DIST =  \
 	nlutilities-test-alignment.c
 @NLUTILITIES_BUILD_TESTS_TRUE@am_nlutilities_test_alignment_OBJECTS = nlutilities-test-alignment.$(OBJEXT)
@@ -273,7 +282,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(nlutilities_test_algorithm_cxx_SOURCES) \
+SOURCES = $(nlutilities_test_abs_SOURCES) \
+	$(nlutilities_test_algorithm_cxx_SOURCES) \
 	$(nlutilities_test_alignment_SOURCES) \
 	$(nlutilities_test_base64_SOURCES) \
 	$(nlutilities_test_binhex_SOURCES) \
@@ -284,7 +294,8 @@ SOURCES = $(nlutilities_test_algorithm_cxx_SOURCES) \
 	$(nlutilities_test_miscellaneous_SOURCES) \
 	$(nlutilities_test_new_cxx_SOURCES) \
 	$(nlutilities_test_noncopyable_cxx_SOURCES)
-DIST_SOURCES = $(am__nlutilities_test_algorithm_cxx_SOURCES_DIST) \
+DIST_SOURCES = $(am__nlutilities_test_abs_SOURCES_DIST) \
+	$(am__nlutilities_test_algorithm_cxx_SOURCES_DIST) \
 	$(am__nlutilities_test_alignment_SOURCES_DIST) \
 	$(am__nlutilities_test_base64_SOURCES_DIST) \
 	$(am__nlutilities_test_binhex_SOURCES_DIST) \
@@ -656,6 +667,18 @@ localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
+nl_filtered_build = @nl_filtered_build@
+nl_filtered_build_cpu = @nl_filtered_build_cpu@
+nl_filtered_build_os = @nl_filtered_build_os@
+nl_filtered_build_vendor = @nl_filtered_build_vendor@
+nl_filtered_host = @nl_filtered_host@
+nl_filtered_host_cpu = @nl_filtered_host_cpu@
+nl_filtered_host_os = @nl_filtered_host_os@
+nl_filtered_host_vendor = @nl_filtered_host_vendor@
+nl_filtered_target = @nl_filtered_target@
+nl_filtered_target_cpu = @nl_filtered_target_cpu@
+nl_filtered_target_os = @nl_filtered_target_os@
+nl_filtered_target_vendor = @nl_filtered_target_vendor@
 nlbuild_autotools_stem = @nlbuild_autotools_stem@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
@@ -708,6 +731,8 @@ EXTRA_DIST = \
 
 
 # Source, compiler, and linker options for test programs.
+@NLUTILITIES_BUILD_TESTS_TRUE@nlutilities_test_abs_SOURCES = nlutilities-test-algorithm-cxx.cpp
+@NLUTILITIES_BUILD_TESTS_TRUE@nlutilities_test_abs_LDADD = $(COMMON_LDADD)
 @NLUTILITIES_BUILD_TESTS_TRUE@nlutilities_test_algorithm_cxx_SOURCES = nlutilities-test-algorithm-cxx.cpp
 @NLUTILITIES_BUILD_TESTS_TRUE@nlutilities_test_algorithm_cxx_LDADD = $(COMMON_LDADD)
 @NLUTILITIES_BUILD_TESTS_TRUE@nlutilities_test_alignment_SOURCES = nlutilities-test-alignment.c
@@ -780,6 +805,10 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+
+nlutilities-test-abs$(EXEEXT): $(nlutilities_test_abs_OBJECTS) $(nlutilities_test_abs_DEPENDENCIES) $(EXTRA_nlutilities_test_abs_DEPENDENCIES) 
+	@rm -f nlutilities-test-abs$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(nlutilities_test_abs_OBJECTS) $(nlutilities_test_abs_LDADD) $(LIBS)
 
 nlutilities-test-algorithm-cxx$(EXEEXT): $(nlutilities_test_algorithm_cxx_OBJECTS) $(nlutilities_test_algorithm_cxx_DEPENDENCIES) $(EXTRA_nlutilities_test_algorithm_cxx_DEPENDENCIES) 
 	@rm -f nlutilities-test-algorithm-cxx$(EXEEXT)
@@ -1090,6 +1119,13 @@ recheck: all $(check_PROGRAMS)
 	        am__force_recheck=am--force-recheck \
 	        TEST_LOGS="$$log_list"; \
 	exit $$?
+nlutilities-test-abs.log: nlutilities-test-abs$(EXEEXT)
+	@p='nlutilities-test-abs$(EXEEXT)'; \
+	b='nlutilities-test-abs'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 nlutilities-test-algorithm-cxx.log: nlutilities-test-algorithm-cxx$(EXEEXT)
 	@p='nlutilities-test-algorithm-cxx$(EXEEXT)'; \
 	b='nlutilities-test-algorithm-cxx'; \
@@ -1349,10 +1385,10 @@ include $(abs_top_nlbuild_autotools_dir)/automake/pre.am
 @NLUTILITIES_BUILD_COVERAGE_REPORTS_TRUE@@NLUTILITIES_BUILD_COVERAGE_TRUE@@NLUTILITIES_BUILD_TESTS_TRUE@$(NLUTILITIES_COVERAGE_BUNDLE):
 @NLUTILITIES_BUILD_COVERAGE_REPORTS_TRUE@@NLUTILITIES_BUILD_COVERAGE_TRUE@@NLUTILITIES_BUILD_TESTS_TRUE@	$(call create-directory)
 
-@NLUTILITIES_BUILD_COVERAGE_REPORTS_TRUE@@NLUTILITIES_BUILD_COVERAGE_TRUE@@NLUTILITIES_BUILD_TESTS_TRUE@$(NLUTILITIES_COVERAGE_INFO): check | $(NLUTILITIES_COVERAGE_BUNDLE)
+@NLUTILITIES_BUILD_COVERAGE_REPORTS_TRUE@@NLUTILITIES_BUILD_COVERAGE_TRUE@@NLUTILITIES_BUILD_TESTS_TRUE@$(NLUTILITIES_COVERAGE_INFO): check-local | $(NLUTILITIES_COVERAGE_BUNDLE)
 @NLUTILITIES_BUILD_COVERAGE_REPORTS_TRUE@@NLUTILITIES_BUILD_COVERAGE_TRUE@@NLUTILITIES_BUILD_TESTS_TRUE@	$(call generate-coverage-report,${top_builddir})
 
-@NLUTILITIES_BUILD_COVERAGE_REPORTS_TRUE@@NLUTILITIES_BUILD_COVERAGE_TRUE@@NLUTILITIES_BUILD_TESTS_TRUE@coverage: $(NLUTILITIES_COVERAGE_INFO)
+@NLUTILITIES_BUILD_COVERAGE_REPORTS_TRUE@@NLUTILITIES_BUILD_COVERAGE_TRUE@@NLUTILITIES_BUILD_TESTS_TRUE@coverage-local: $(NLUTILITIES_COVERAGE_INFO)
 
 @NLUTILITIES_BUILD_COVERAGE_REPORTS_TRUE@@NLUTILITIES_BUILD_COVERAGE_TRUE@@NLUTILITIES_BUILD_TESTS_TRUE@clean-local: clean-local-coverage
 

@@ -15,7 +15,8 @@
 @SET_MAKE@
 
 #
-#    Copyright 2018 Nest Labs Inc. All Rights Reserved.
+#    Copyright 2018 Google LLC
+#    All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -164,7 +165,9 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libnlutilities_a_AR = $(AR) $(ARFLAGS)
 libnlutilities_a_LIBADD =
-am_libnlutilities_a_OBJECTS = libnlutilities_a-nlbase64.$(OBJEXT) \
+am_libnlutilities_a_OBJECTS =  \
+	libnlutilities_a-nlabs-variants.$(OBJEXT) \
+	libnlutilities_a-nlbase64.$(OBJEXT) \
 	libnlutilities_a-nlbintohex.$(OBJEXT) \
 	libnlutilities_a-nldumpbytes.$(OBJEXT) \
 	libnlutilities_a-nlfixedpoint.$(OBJEXT) \
@@ -371,6 +374,18 @@ localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
+nl_filtered_build = @nl_filtered_build@
+nl_filtered_build_cpu = @nl_filtered_build_cpu@
+nl_filtered_build_os = @nl_filtered_build_os@
+nl_filtered_build_vendor = @nl_filtered_build_vendor@
+nl_filtered_host = @nl_filtered_host@
+nl_filtered_host_cpu = @nl_filtered_host_cpu@
+nl_filtered_host_os = @nl_filtered_host_os@
+nl_filtered_host_vendor = @nl_filtered_host_vendor@
+nl_filtered_target = @nl_filtered_target@
+nl_filtered_target_cpu = @nl_filtered_target_cpu@
+nl_filtered_target_os = @nl_filtered_target_os@
+nl_filtered_target_vendor = @nl_filtered_target_vendor@
 nlbuild_autotools_stem = @nlbuild_autotools_stem@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
@@ -396,6 +411,7 @@ libnlutilities_a_CPPFLAGS = \
     $(NULL)
 
 libnlutilities_a_SOURCES = \
+    nlabs-variants.c                  \
     nlbase64.c                        \
     nlbintohex.c                      \
     nldumpbytes.c                     \
@@ -487,6 +503,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnlutilities_a-nlabs-variants.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnlutilities_a-nlbase64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnlutilities_a-nlbintohex.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnlutilities_a-nldumpbytes.Po@am__quote@
@@ -522,6 +539,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+libnlutilities_a-nlabs-variants.o: nlabs-variants.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libnlutilities_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libnlutilities_a-nlabs-variants.o -MD -MP -MF $(DEPDIR)/libnlutilities_a-nlabs-variants.Tpo -c -o libnlutilities_a-nlabs-variants.o `test -f 'nlabs-variants.c' || echo '$(srcdir)/'`nlabs-variants.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libnlutilities_a-nlabs-variants.Tpo $(DEPDIR)/libnlutilities_a-nlabs-variants.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nlabs-variants.c' object='libnlutilities_a-nlabs-variants.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libnlutilities_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libnlutilities_a-nlabs-variants.o `test -f 'nlabs-variants.c' || echo '$(srcdir)/'`nlabs-variants.c
+
+libnlutilities_a-nlabs-variants.obj: nlabs-variants.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libnlutilities_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libnlutilities_a-nlabs-variants.obj -MD -MP -MF $(DEPDIR)/libnlutilities_a-nlabs-variants.Tpo -c -o libnlutilities_a-nlabs-variants.obj `if test -f 'nlabs-variants.c'; then $(CYGPATH_W) 'nlabs-variants.c'; else $(CYGPATH_W) '$(srcdir)/nlabs-variants.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libnlutilities_a-nlabs-variants.Tpo $(DEPDIR)/libnlutilities_a-nlabs-variants.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nlabs-variants.c' object='libnlutilities_a-nlabs-variants.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libnlutilities_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libnlutilities_a-nlabs-variants.obj `if test -f 'nlabs-variants.c'; then $(CYGPATH_W) 'nlabs-variants.c'; else $(CYGPATH_W) '$(srcdir)/nlabs-variants.c'; fi`
 
 libnlutilities_a-nlbase64.o: nlbase64.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libnlutilities_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libnlutilities_a-nlbase64.o -MD -MP -MF $(DEPDIR)/libnlutilities_a-nlbase64.Tpo -c -o libnlutilities_a-nlbase64.o `test -f 'nlbase64.c' || echo '$(srcdir)/'`nlbase64.c
