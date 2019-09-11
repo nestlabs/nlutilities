@@ -1,3 +1,9 @@
+1.3.6 (2019-09-10)
+
+        * Removed the long-deprecated COMPILE_TIME_ASSERT macro.
+	  The preferred static-assert macro is nlSTATIC_ASSERT,
+	  from https://github.com/nestlabs/nlassert .
+
 1.3.5 (2019-05-24)
 
         * Updated to nlbuild-autotools 1.6.11.

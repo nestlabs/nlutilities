@@ -41,9 +41,6 @@
 // software won't need the #ifndefs.
 
 // Deprecated macros, included for compatibility with legacy code.
-#ifndef COMPILE_TIME_ASSERT
-#define COMPILE_TIME_ASSERT _NLMACROS_ASSERT
-#endif
 #ifndef ROUNDUP
 #define ROUNDUP(a, b)                           ROUNDUP_U(a, b)
 #endif
