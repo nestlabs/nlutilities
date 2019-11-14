@@ -1,6 +1,6 @@
 /*
  *
- *    Copyright (c) 2012-2018 Nest Labs, Inc.
+ *    Copyright (c) 2012-2019 Nest Labs, Inc.
  *    All rights reserved.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,8 +37,8 @@
 
 // The #ifndefs in this file are for third-party software that defines its
 // own identically-named macros, and for our own software that hasn't yet
-// been modified to use this shared set of macros.  Eventually, our
-// software won't need the #ifndefs.
+// been modified to use this shared set of macros. Eventually, our software
+// won't need the #ifndefs.
 
 // Deprecated macros, included for compatibility with legacy code.
 #ifndef ROUNDUP
@@ -48,19 +48,19 @@
 #define MILLISECONDS_PER_SECOND                 MS_PER_SEC
 
 // MIN and MAX, as usually written, are the canonical examples of macros that
-// fail when passed expressions with side-effects (e.g., "MAX(x++, y++)").  Our
+// fail when passed expressions with side-effects (e.g., "MAX(x++, y++)"). Our
 // LOG2, CTZ, IS_POW2, and ROUNDDOWN/ROUNDUP macros have similar issues with
 // side effects.
 //
 // For C programs, we solve this problem by using safer macros that require the
 // statement-expression and typeof extensions, and the __COUNTER__ predefined
-// macro, provided by GCC and Clang.  For C++ programs, there's a subtle case
+// macro, provided by GCC and Clang. For C++ programs, there's a subtle case
 // where those macros will fail (see GCC's statement-expression documentation
 // for details), so we use the usual macros; they still have a side-effects
 // problem, but at least that one is well-known and therefore easier to debug
 // than the obscure problem with statement expressions in C++.
 
-// We always set BUILD_FEATURE_USE_UNSAFE_MACROS to 1 for C++ programs.  If the
+// We always set BUILD_FEATURE_USE_UNSAFE_MACROS to 1 for C++ programs. If the
 // unsafe versions of the macros are desired for C programs as well, set
 // BUILD_FEATURE_USE_UNSAFE_MACROS to 1 on the command line or in the makefile.
 
@@ -75,11 +75,12 @@
 #ifndef MIN
 #define MIN(a, b)                               ((a) < (b) ? (a) : (b))
 #endif
-
 #ifndef MAX
 #define MAX(a, b)                               ((a) > (b) ? (a) : (b))
 #endif
-
+#ifndef LIMIT
+#define LIMIT(v, low, high)                     MAX(low, MIN(v, high))
+#endif
 #ifndef LOG2
 #define LOG2(x)                                 ((x) != 0 ? 31 - __builtin_clz(x) : -1)
 #endif
@@ -92,7 +93,7 @@
 
 // ROUNDDOWN and ROUNDUP_U/ROUNDUP_S actually perform "round toward 0" and
 // "round away from 0", respectively (and they only perform it for integral
-// types).  ROUNDUP_S works with signed parameters; ROUNDUP_U is just ROUNDUP_S
+// types). ROUNDUP_S works with signed parameters; ROUNDUP_U is just ROUNDUP_S
 // simplified for the usual case in which both parameters are unsigned.
 #ifndef ROUNDDOWN
 #define ROUNDDOWN(a, b)                         ((a) / (b) * (b))
@@ -100,17 +101,27 @@
 #define ROUNDUP_S(a, b)                         ROUNDDOWN((a) + ((((a) < 0) == ((b) < 0)) ? (b) : -(b)) + (((a) < 0) ? 1 : -1), b)
 #define ROUNDUP_U(a, b)                         ROUNDDOWN((a) + (b) - 1, b)
 
+// ROUNDED_DIV divides a by b, rounding the quotient to the nearest integer.
+// A quotient exactly halfway between integers is rounded away from zero.
+//
+// Note that our test for non-negative is "a == 0 || a > 0" rather than
+// "a >= 0", in order to avoid "comparison is always true" warnings with
+// unsigned inputs.
+#ifndef ROUNDED_DIV
+#define ROUNDED_DIV(a, b)                       (((a) + (((a) == 0 || (a) > 0) != ((b) == 0 || (b) > 0) ? -(b) : (b)) / 2) / (b))
+#endif
+
 #else // #ifdef BUILD_FEATURE_USE_UNSAFE_MACROS
 
 // Safer macros.
 
 // MIN and MAX include static asserts that trigger if their two arguments
-// differ in signedness.  This prevents, for example, MAX(-1,1U) = -1.
+// differ in signedness. This prevents, for example, MAX(-1,1U) = -1.
 //
 // The test for each argument is "(__typeof__(X))(-1) <= 0"; casting the "-1"
 // to the type of X forces it to become unsigned if X is unsigned, so the test
 // simplifies to either "-1 <= 0" (true) or "-1U <= 0" (false, because "-1U"
-// is a large all-ones positive number).  If the two macro arguments have
+// is a large all-ones positive number). If the two macro arguments have
 // different signedness, the two test results will be different and we'll
 // trigger the assert.
 //
@@ -118,27 +129,32 @@
 // "comparison is always false" warnings when X is unsigned.
 //
 // Note also that we're testing the signedness AS WRITTEN (that is, before
-// integer promotion).  This means that we will not assert on a comparison
+// integer promotion). This means that we will not assert on a comparison
 // between uint16_t and uint32_t, and we WILL assert on a comparison between
 // uint16_t and int32_t, even though in both cases the compiler will internally
 // promote the unsigned uint16_t to a SIGNED int_32_t for the comparison.
+//
+// Finally, note that the LOG2 and CTZ macros explicitly cast their parameters
+// to unsigned int, because that's the argument type of the underlying GCC
+// builtin functions.
 #ifndef MIN
 #define MIN(a, b)                               MIN_INNER(a, b, __COUNTER__)
 #define MIN_INNER(a, b, C)                      ({ __typeof__(a) _CC(_a, C) = (a); __typeof__(b) _CC(_b, C) = (b); _NLMACROS_ASSERT(((__typeof__(a))(-1) <= 0) == ((__typeof__(b))(-1) <= 0)); (_CC(_a, C) < _CC(_b, C)) ? _CC(_a, C) : _CC(_b, C); })
 #endif
-
 #ifndef MAX
 #define MAX(a, b)                               MAX_INNER(a, b, __COUNTER__)
 #define MAX_INNER(a, b, C)                      ({ __typeof__(a) _CC(_a, C) = (a); __typeof__(b) _CC(_b, C) = (b); _NLMACROS_ASSERT(((__typeof__(a))(-1) <= 0) == ((__typeof__(b))(-1) <= 0)); (_CC(_a, C) > _CC(_b, C)) ? _CC(_a, C) : _CC(_b, C); })
 #endif
-
+#ifndef LIMIT
+#define LIMIT(v, low, high)                     MAX(low, MIN(v, high))
+#endif
 #ifndef LOG2
 #define LOG2(x)                                 LOG2_INNER(x, __COUNTER__)
-#define LOG2_INNER(x, C)                        ({ __typeof__(x) _CC(_x, C) = (x); (_CC(_x, C) != 0) ? 31 - __builtin_clz(_CC(_x, C)) : -1; })
+#define LOG2_INNER(x, C)                        ({ unsigned int _CC(_x, C) = (x); (_CC(_x, C) != 0) ? 31 - __builtin_clz(_CC(_x, C)) : -1; })
 #endif
 #ifndef CTZ
 #define CTZ(x)                                  CTZ_INNER(x, __COUNTER__)
-#define CTZ_INNER(x, C)                         ({ __typeof__(x) _CC(_x, C) = (x); (_CC(_x, C) != 0) ? __builtin_ctz(_CC(_x, C)) : -1; })
+#define CTZ_INNER(x, C)                         ({ unsigned int _CC(_x, C) = (x); (_CC(_x, C) != 0) ? __builtin_ctz(_CC(_x, C)) : -1; })
 #endif
 #ifndef IS_POW2
 #define IS_POW2(x)                              IS_POW2_INNER(x, __COUNTER__)
@@ -147,7 +163,7 @@
 
 // ROUNDDOWN and ROUNDUP_U/ROUNDUP_S actually perform "round toward 0" and
 // "round away from 0", respectively (and they only perform it for integral
-// types).  ROUNDUP_S works with signed or unsigned parameters; ROUNDUP_U is
+// types). ROUNDUP_S works with signed or unsigned parameters; ROUNDUP_U is
 // just ROUNDUP_S simplified for the usual case in which both parameters are
 // unsigned, and it contains a static assert (with a test similar to the one
 // described above for MIN and MAX) that triggers if either argument is signed.
@@ -159,6 +175,17 @@
 #define ROUNDUP_S_INNER(a, b, C)                ({ __typeof__(a) _CC(_a, C) = (a); __typeof__(b) _CC(_b, C) = (b); ROUNDDOWN(_CC(_a, C) + ((_CC(_a, C) < 0 == _CC(_b, C) < 0) ? _CC(_b, C) : -_CC(_b, C)) + ((_CC(_a, C) < 0) ? 1 : -1), _CC(_b, C)); })
 #define ROUNDUP_U(a, b)                         ROUNDUP_U_INNER(a, b, __COUNTER__)
 #define ROUNDUP_U_INNER(a, b, C)                ({ __typeof__(a) _CC(_a, C) = (a); __typeof__(b) _CC(_b, C) = (b); _NLMACROS_ASSERT(((__typeof__(a))(-1) > 0) && ((__typeof__(b))(-1) > 0)); ROUNDDOWN(_CC(_a, C) + _CC(_b, C) - 1, _CC(_b, C)); })
+
+// ROUNDED_DIV divides a by b, rounding the quotient to the nearest integer.
+// A quotient exactly halfway between integers is rounded away from zero.
+//
+// Note that our test for non-negative is "a == 0 || a > 0" rather than
+// "a >= 0", in order to avoid "comparison is always true" warnings with
+// unsigned inputs.
+#ifndef ROUNDED_DIV
+#define ROUNDED_DIV(a, b)                       ROUNDED_DIV_INNER(a, b, __COUNTER__)
+#define ROUNDED_DIV_INNER(a, b, C)              ({ __typeof__(a) _CC(_a, C) = (a); __typeof__(b) _CC(_b, C) = (b); (_CC(_a, C) + ((_CC(_a, C) == 0 || _CC(_a, C) > 0) != (_CC(_b, C) == 0 || _CC(_b, C) > 0) ? -(_CC(_b, C)) : _CC(_b, C)) / 2) / _CC(_b, C); })
+#endif
 
 #endif // #ifdef BUILD_FEATURE_USE_UNSAFE_MACROS
 
@@ -187,9 +214,11 @@
 #define ARRAY_LAST(a)                           (&((a)[ARRAY_SIZE(a) - 1]))
 #endif
 
+// Offset, in bytes, of a structure member from the address of its structure.
+//
 // In the extraordinarily unlikely event that this code is passed to a pre-C89
 // compiler (or one without a compliant stddef.h that includes "offsetof"),
-// we'll use our own OFFSETOF macro.  Otherwise, we'll use the one provided by
+// we'll use our own OFFSETOF macro. Otherwise, we'll use the one provided by
 // the compiler, which is at least no worse than ours and might be better.
 #ifndef OFFSETOF
 #ifndef offsetof
@@ -199,6 +228,8 @@
 #endif
 #endif
 
+// Pointer to the structure that contains the member pointed to by 'pointer'.
+//
 // The "(1 ? (pointer) : &((type *)0)->member)" is functionally equivalent to
 // "(pointer)", but it provides type safety by ensuring that "pointer" points
 // to a type compatible with "member" (because the conditional operator requires
@@ -206,9 +237,16 @@
 #ifndef CONTAINEROF
 #define CONTAINEROF(pointer, type, member)      (nlStaticCast(type *,             \
     (nlStaticCast(char *, (1 ? (pointer) : &(nlStaticCast(type *, 0)->member))) - \
-     OFFSETOF(type, member))))
+    OFFSETOF(type, member))))
 #endif
 
+// Size, in bytes, of a structure member.
+#ifndef SIZEOF
+#define SIZEOF(type, member)                    (nlStaticCast(size_t, sizeof(nlStaticCast(type *, 0)->member)))
+#endif
+
+// Pointer to the smallest `size`-aligned address greater than or equal to
+// 'pointer'. 'size' must be a positive integral power of two.
 #ifndef ALIGN_POINTER
 #define ALIGN_POINTER(pointer, size)            (nlStaticCast(uint8_t *, nlStaticCast(uintptr_t, (pointer) + ((size) - 1)) & (~((size) - 1))))
 #endif
@@ -232,7 +270,7 @@
 #define CONCAT(a, b)                            a##b
 #endif
 
-// Static assert macro for internal use in this header file only.  This macro
+// Static assert macro for internal use in this header file only. This macro
 // definition is intended to duplicate the _nlSTATIC_ASSERT macro definition
 // in nlassert-internal.h, so if this definition is modified, that one should
 // be modified to match.
