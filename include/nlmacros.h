@@ -79,7 +79,7 @@
 #define MAX(a, b)                               ((a) > (b) ? (a) : (b))
 #endif
 #ifndef LIMIT
-#define LIMIT(v, l, h)                          MAX(l, MIN(v, h))
+#define LIMIT(v, low, high)                     MAX(low, MIN(v, high))
 #endif
 #ifndef LOG2
 #define LOG2(x)                                 ((x) != 0 ? 31 - __builtin_clz(x) : -1)
@@ -146,7 +146,7 @@
 #define MAX_INNER(a, b, C)                      ({ __typeof__(a) _CC(_a, C) = (a); __typeof__(b) _CC(_b, C) = (b); _NLMACROS_ASSERT(((__typeof__(a))(-1) <= 0) == ((__typeof__(b))(-1) <= 0)); (_CC(_a, C) > _CC(_b, C)) ? _CC(_a, C) : _CC(_b, C); })
 #endif
 #ifndef LIMIT
-#define LIMIT(v, l, h)                          MAX(l, MIN(v, h))
+#define LIMIT(v, low, high)                     MAX(low, MIN(v, high))
 #endif
 #ifndef LOG2
 #define LOG2(x)                                 LOG2_INNER(x, __COUNTER__)
