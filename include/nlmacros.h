@@ -164,7 +164,7 @@
 
 // Each parameter evaluated once
 #ifndef BITMASK
-#define BITMASK(b, s)                           ((~(~0 << (b))) << (s))
+#define BITMASK(b, s)                           ((~(~0U << (b))) << (s))
 #endif
 #ifndef NL_BIT
 #define NL_BIT(s)                               BITMASK(1, s)
