@@ -21,8 +21,8 @@ Included are interfaces for:
 * dumping memory in a pretty-printed format
 * parsing delimited byte strings.
 
-[nlutilities-travis]: https://travis-ci.org/nestlabs/nlutilities
-[nlutilities-travis-svg]: https://travis-ci.org/nestlabs/nlutilities.svg?branch=master
+[nlutilities-travis]: https://travis-ci.com/nestlabs/nlutilities
+[nlutilities-travis-svg]: https://travis-ci.com/nestlabs/nlutilities.svg?branch=master
 [nlutilities-codecov]: https://codecov.io/gh/nestlabs/nlutilities
 [nlutilities-codecov-svg]: https://codecov.io/gh/nestlabs/nlutilities/branch/master/graph/badge.svg
 
